@@ -1,0 +1,124 @@
+{
+  "name": "produirelang",
+  "displayName": "プロデル",
+  "description": "プロデル 拡張機能",
+  "author": "utopiat.net",
+  "license": "MIT",
+  "homepage": "https://produ.irelang.jp/",
+  "version": "0.0.4",
+  "publisher": "utopiat",
+  "icon": "images/produire-icon-128.png",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:jplproduire"
+  ],
+  "keywords": [
+    "プロデル",
+    "日本語プログラミング言語",
+    "Japanese Programming Language"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "jplproduire",
+        "extensions": [
+          ".rdr",
+          ".プロデル"
+        ],
+        "aliases": [
+          "プロデル",
+          "rdr",
+          "produire",
+          "jplproduire"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jplproduire",
+        "scopeName": "source.rdr",
+        "path": "./syntaxes/jplproduire.tmLanguage.json"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "jplproduire.runProduireFile",
+        "key": "F5",
+        "enablement": "resourceLangId == jplproduire && !isInDiffEditor && !inDebugMode"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "jplproduire.runProduireFile",
+          "group": "produire",
+          "when": "resourceLangId == jplproduire && !isInDiffEditor"
+        }
+      ]
+    },
+		"commands": [
+			{
+				"command": "jplproduire.runProduireFile",
+				"category": "ProduireLang",
+				"title": "実行",
+				"shortTitle": "プログラムの実行",
+				"icon": "$(run)",
+				"enablement": "resourceLangId == jplproduire && !isInDiffEditor && shellExecutionSupported"
+			}
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "プロデル",
+      "properties": {
+        "jplproduire.pluginsPath": {
+          "type": "string",
+          "default": "C:\\Program Files (x86)\\Produire\\Plugins\\",
+          "description": "プロデルプラグインがあるフォルダを指定します。"
+        },
+        "jplproduire.runtimeexe": {
+          "type": "string",
+          "default": "C:\\Program Files (x86)\\Produire\\pconsole.exe",
+          "description": "プロデルの実行環境(pconsole.exeまたはproduire.exe)を指定します。"
+        },
+        "jplproduire.maxNumberOfProblems": {
+          "type": "number",
+          "default": 1000,
+          "description": "一度に表示できるエラーメッセージの最大行数を設定します。"
+        },
+        "jplproduire.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "VSCodeとプロデル言語サーバとの通信内容のトレースを表示するかどうか設定します。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "update-vscode": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.1.0",
+    "@types/vscode": "^1.92.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "vscode-languageclient": "~3.5.1"
+  }
+}

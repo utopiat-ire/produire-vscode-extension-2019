@@ -1,0 +1,92 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "jplProduire",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#comments"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.jplproduire",
+					"match": "\\b(もし|終わり|他でもし|もし終わり|繰り返し終わり)\\b"
+				},
+				{
+					"name": "procedure.control.jplproduire",
+					"match": "\\b手順$"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.jplproduire",
+			"begin": "「",
+			"end": "」",
+			"patterns": [
+				{
+					"name": "constant.character.escape.jplproduire",
+					"match": "\\\\."
+				}
+			]
+		},
+		"arrays": {
+			"name": "array.bracket.jplproduire",
+			"begin": "{",
+			"end": "}",
+			"patterns": [
+				{
+					"name": "constant.character.escape.jplproduire",
+					"match": "\\\\."
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"include": "#linecomment"
+				},
+				{
+					"include": "#doubleslashcomment"
+				},
+				{
+					"include": "#blockcomment"
+				}
+			],
+			"repository": {
+				"linecomment": {
+					"patterns": [
+						{
+							"match": "ーー.*$",
+							"name": "comment.line"
+						}
+					]
+				},
+				"doubleslashcomment": {
+					"patterns": [
+						{
+							"match": "//.*$",
+							"name": "comment.line.double-slash"
+						}
+					]
+				},
+				"blockcomment": {
+					"patterns": [
+						{
+							"name": "comment.block",
+							"begin": "/\\*",
+							"end": "\\*/"
+						}
+					]
+				}
+			}
+		}
+	},
+	"scopeName": "source.rdr"
+}
