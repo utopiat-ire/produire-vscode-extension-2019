@@ -1,6 +1,7 @@
 ﻿// Copyright(C) 2019-2024 utopiat.net https://github.com/utopiat-ire/
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Produire.Model;
 using Produire.Model.Phrase;
 
@@ -126,4 +127,65 @@ namespace Produire.Designer.DocumentModel
 		internal IPhrase Phrase;
 		internal ProduireFile ProduireFile;
 	}
+
+	public class CleanupCodeBuilder : IAutoIndentCodeBuilder
+	{
+		StringBuilder source = new StringBuilder();
+		int level;
+		bool isHeadOfLine;
+		public CleanupCodeBuilder()
+		{
+		}
+
+		/// <summary>改行</summary>
+		public void WriteLine()
+		{
+			Write("", CodePartsType.NewLine);
+		}
+
+		/// <summary>文字列を挿入します</summary>
+		public void Write(string text)
+		{
+			Write(text, CodePartsType.Text);
+		}
+
+		/// <summary>文字列を挿入します</summary>
+		public void Write(string text, CodePartsType type)
+		{
+			if (type == CodePartsType.Indent) return;
+			if (isHeadOfLine && type != CodePartsType.NewLine)
+			{
+				source.Append(new string('\t', level));
+				isHeadOfLine = false;
+			}
+			if (type == CodePartsType.NewLine)
+			{
+				isHeadOfLine = true;
+				source.AppendLine();
+			}
+			else
+				source.Append(text);
+		}
+
+		public void StartBuild()
+		{
+			source = new StringBuilder();
+		}
+		public void FinishBuild()
+		{
+		}
+		public void IncreaseLevel()
+		{
+			level++;
+		}
+		public void DecreaseLevel()
+		{
+			level--;
+		}
+		public override string ToString()
+		{
+			return source.ToString();
+		}
+	}
+
 }

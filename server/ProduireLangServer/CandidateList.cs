@@ -100,7 +100,7 @@ namespace ProduireLangServer
 			{
 				var particle = particles[i];
 				string yomi = GetYomigana(particle);
-				string roman = string.IsNullOrEmpty(yomi) ? null : NamingComparer.FromRoman(yomi);
+				string roman = string.IsNullOrEmpty(yomi) ? null : NamingComparer.ToRoman(yomi);
 				Add(particle, CompletionItemKind.Operator, particle, null, yomi, roman);
 			}
 

@@ -66,7 +66,8 @@ namespace ProduireLangServer
 					//codeLensProvider = new CodeLensOptions { resolveProvider = true },
 					documentHighlightProvider = true,
 					referencesProvider = true,
-					renameProvider = true
+					renameProvider = true,
+					documentFormattingProvider = true
 				}
 			};
 			return Result<InitializeResult, ResponseError<InitializeErrorData>>.Success(result);
@@ -126,10 +127,6 @@ namespace ProduireLangServer
 		{
 			maxNumberOfProblems = args?.settings?.jplproduire?.maxNumberOfProblems ?? maxNumberOfProblems;
 			//Logger.Instance.Log("maxNumberOfProblemsの値:" + maxNumberOfProblems);
-			foreach (var document in documentList.All)
-			{
-				ValidateTextDocument(document);
-			}
 
 			//プラグインフォルダ
 			pluginsPath = args?.settings?.jplproduire?.pluginsPath ?? pluginsPath;
@@ -144,6 +141,11 @@ namespace ProduireLangServer
 			else
 			{
 				Logger.Instance.Log("プラグインフォルダが見つかりません。" + PluginManager.PluginsPath);
+			}
+
+			foreach (var document in documentList.All)
+			{
+				ValidateTextDocument(document);
 			}
 		}
 
@@ -469,6 +471,31 @@ namespace ProduireLangServer
 			};
 			WorkspaceEdit we = new WorkspaceEdit { documentChanges = new TextDocumentEdit[] { edit } };
 			return Result<WorkspaceEdit, ResponseError>.Success(we);
+		}
+
+		protected override Result<TextEdit[], ResponseError> DocumentFormatting(DocumentFormattingParams args)
+		{
+			if (!rdrList.TryGetValue(args.textDocument.uri.LocalPath, out ProduireFile rdr))
+			{
+				return Result<TextEdit[], ResponseError>.Error(GetError("プログラムが読み込まれていません。"));
+			}
+
+			ScriptGenerator generator = new ScriptGenerator();
+			CleanupCodeBuilder builder = new CleanupCodeBuilder();
+			generator.Generate(rdr, builder);
+
+			List<TextEdit> list = new List<TextEdit>();
+			if (rdr.CodeList.Count > 0)
+			{
+				var start = new CodePosition(1, 1, 1);
+				var end = rdr.CodeList[rdr.CodeList.Count - 1].Range.End;
+				list.Add(new TextEdit
+				{
+					range = GetRange(new CodeRange(start, end)),
+					newText = builder.ToString()
+				});
+			}
+			return Result<TextEdit[], ResponseError>.Success(list.ToArray());
 		}
 
 		private ICodeElement GetElementFromPosition(ProduireFile rdr, Position position)

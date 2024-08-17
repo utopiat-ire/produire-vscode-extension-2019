@@ -31,7 +31,7 @@ export function activate(context: ExtensionContext) {
 			return execute.runProduireFile(filepath, [], false);
 		})
 	);
-		
+
 	// The server is implemented in C#
 	let serverCommand = context.asAbsolutePath(path.join('server', 'ProduireLangServer.exe'));
 	let commandOptions: ExecutableOptions = { stdio: 'pipe', detached: false };
