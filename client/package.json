@@ -1,11 +1,11 @@
 {
   "name": "produirelang",
   "displayName": "プロデル",
-  "description": "プロデル 拡張機能",
+  "description": "プログラミング言語「プロデル」拡張機能",
   "author": "utopiat.net",
   "license": "MIT",
   "homepage": "https://produ.irelang.jp/",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "utopiat",
   "icon": "images/produire-icon-128.png",
   "engines": {

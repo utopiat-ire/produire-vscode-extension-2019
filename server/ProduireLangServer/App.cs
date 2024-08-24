@@ -22,6 +22,8 @@ namespace ProduireLangServer
 {
 	public class App : ServiceConnection
 	{
+		const string HelpBaseUrl = "https://produ.irelang.jp/docs";
+
 		Uri workerSpaceRoot;
 		TextDocumentManager documentList;
 		Dictionary<string, ProduireFile> rdrList = new Dictionary<string, ProduireFile>();
@@ -303,17 +305,24 @@ namespace ProduireLangServer
 			{
 				return Result<Hover, ResponseError>.Error(GetError("プログラムが読み込まれていません。"));
 			}
-			string tips = "";
+			var hover = new Hover();
 			var hitElement = GetElementFromPosition(rdr, args.position);
 			if (hitElement is IPhrase)
 			{
-				var phrase = hitElement as IPhrase;
-				tips = phrase.DisplayText;
+				var ph = hitElement as IPhrase;
+				hover.range = GetRange(ph.Range);
+				hover.contents = ph.DisplayText;
+				if (hitElement is IHintProvider)
+				{
+					var ph2 = hitElement as IHintProvider;
+					string url = ph2.GetHintUrl();
+					if (!string.IsNullOrEmpty(url))
+					{
+						hover.contents = "[" + ph.DisplayText + "](" + HelpBaseUrl + url + ")";
+					}
+				}
 			}
-			var hover = new Hover()
-			{
-				contents = new HoverContents(tips)
-			};
+
 			return Result<Hover, ResponseError>.Success(hover);
 		}
 		protected override Result<LocationSingleOrArray, ResponseError> GotoDefinition(TextDocumentPositionParams args)

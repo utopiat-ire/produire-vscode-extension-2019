@@ -2,7 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\client",
-    "\\server"
+    "\\server",
+    "\\server\\ProduireLangServer"
   ],
+  "SelectedNode": "\\client\\package.json",
   "PreviewInSolutionExplorer": false
 }
